@@ -52,6 +52,7 @@
 (defvar helm-emmet-css-snippets-keys
   (loop for k being hash-key in helm-emmet-css-snippets-hash collect k))
 
+;;;###autoload
 (defvar helm-source-emmet
   '((name . "emmet")
     (candidates . (lambda () (append helm-emmet-html-snippets-keys
