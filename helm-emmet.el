@@ -1,6 +1,6 @@
 ;;; helm-emmet.el --- A helm source for emmet-mode's snippets
 
-;; Copyright (C) 2013 yasuyk
+;; Copyright (C) 2013 Yasuyuki Oka <yasuyk@gmail.com>
 
 ;; Author: Yasuyuki Oka <yasuyk@gmail.com>
 ;; Version: DEV
