@@ -1,4 +1,4 @@
-;;; helm-emmet.el --- A helm source for emmet-mode's snippets
+;;; helm-emmet.el --- helm sources for emmet-mode's snippets
 
 ;; Copyright (C) 2013 Yasuyuki Oka <yasuyk@gmail.com>
 
@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; Provides a helm source for emmet-mode
+;; Provides helm sources for emmet-mode
 
 ;;; Usage:
 
@@ -52,32 +52,44 @@
 (defvar helm-emmet-css-snippets-keys
   (loop for k being hash-key in helm-emmet-css-snippets-hash collect k))
 
-;;;###autoload
-(defvar helm-source-emmet
-  '((name . "emmet")
-    (candidates . (lambda () (append helm-emmet-html-snippets-keys
-                                     helm-emmet-html-aliases-keys
-                                     helm-emmet-css-snippets-keys)))
-    (action . (("Preview" . (lambda (c)
+(define-helm-type-attribute 'emmet
+  '((action . (("Preview" . (lambda (c)
                               (insert c)
                               (call-interactively 'emmet-expand-line)))
                ("Expand" . (lambda (c)
                              (insert c)
-                             (emmet-expand-line c))))))
-    ;; TODO persistent-action
-    ;; (persistent-action . (lambda (c)
-    ;;                        (message
-    ;;                         (or (gethash c helm-emmet-html-snippets-hash)
-    ;;                             (gethash c helm-emmet-html-aliases-hash)
-    ;;                             (gethash c helm-emmet-css-snippets-hash)))))
-    ;; (persistent-help . "Show expanded snippet"))
-  "Show emmet-mode's snippets.")
+                             (emmet-expand-line c)))))))
+;; TODO persistent-action
+
+;;;###autoload
+(defvar helm-source-emmet-html-snippets
+  '((name . "emmet html snippets")
+    (candidates . helm-emmet-html-snippets-keys)
+    (type . emmet))
+  "Show emmet-mode's html snippets.")
+
+;;;###autoload
+(defvar helm-source-emmet-html-aliases
+  '((name . "emmet html aliases")
+    (candidates . helm-emmet-html-aliases-keys)
+    (type . emmet))
+  "Show emmet-mode's html aliases.")
+
+;;;###autoload
+(defvar helm-source-emmet-css-snippets
+  '((name . "emmet css snippets")
+    (candidates . helm-emmet-css-snippets-keys)
+    (type . emmet))
+  "Show emmet-mode's css snippets.")
 
 ;;;###autoload
 (defun helm-emmet ()
   "Helm to preview or expand emmet-mode's snippets."
   (interactive)
-  (helm-other-buffer 'helm-source-emmet "*helm emmet*"))
+  (helm-other-buffer '(helm-source-emmet-html-snippets
+                       helm-source-emmet-html-aliases
+                       helm-source-emmet-css-snippets)
+                     "*helm emmet*"))
 
 (provide 'helm-emmet)
 

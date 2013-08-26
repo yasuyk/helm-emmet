@@ -1,6 +1,6 @@
 ## Synopsis
 
-A helm source for [emmet-mode][emmet-mode]'s snippets.
+helm sources for [emmet-mode][emmet-mode]'s snippets.
 
 ## Requirements
 
