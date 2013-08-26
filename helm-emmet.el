@@ -61,21 +61,18 @@
                              (emmet-expand-line c)))))))
 ;; TODO persistent-action
 
-;;;###autoload
 (defvar helm-source-emmet-html-snippets
   '((name . "emmet html snippets")
     (candidates . helm-emmet-html-snippets-keys)
     (type . emmet))
   "Show emmet-mode's html snippets.")
 
-;;;###autoload
 (defvar helm-source-emmet-html-aliases
   '((name . "emmet html aliases")
     (candidates . helm-emmet-html-aliases-keys)
     (type . emmet))
   "Show emmet-mode's html aliases.")
 
-;;;###autoload
 (defvar helm-source-emmet-css-snippets
   '((name . "emmet css snippets")
     (candidates . helm-emmet-css-snippets-keys)
