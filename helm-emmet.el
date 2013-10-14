@@ -65,7 +65,7 @@
 
 (defun helm-emmet-padding-space (lgst-len str)
   (let ((length (- lgst-len (length str))))
-        (if (< 0 length) (make-string length ? ) " ")))
+        (when (< 0 length) (make-string length ? ))))
 
 (defun helm-emmet-real-to-display (candidate)
   (let ((snippet (get-text-property 0 'helm-emmet-snippet candidate))
