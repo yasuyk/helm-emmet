@@ -2,6 +2,9 @@
 
 helm sources for [emmet-mode][emmet-mode]'s snippets.
 
+## Screenshot
+![](https://github.com/yasuyk/helm-emmet/raw/master/sample/screenshot.png)
+
 ## Requirements
 
 - [helm][helm]
