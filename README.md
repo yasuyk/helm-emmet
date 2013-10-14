@@ -33,9 +33,11 @@ These actions are available.
 * Preview snippet
 * Expand snippet directly
 
-## TODO
+## Customize
 
-* persistent-action
+### `helm-emmet-snippet-first-line`
+
+Face used for a first line of snippet in helm buffer.
 
 [helm]:https://github.com/emacs-helm/helm
 [emmet-mode]:https://github.com/smihica/emmet-mode
