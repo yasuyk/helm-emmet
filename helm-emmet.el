@@ -80,6 +80,14 @@
           (concat candidate " " (helm-emmet-padding-space lgst-len candidate) firstline))
       candidate)))
 
+(defun helm-emmet-persistent-action (candidate)
+  (let ((hbuf (get-buffer (help-buffer))))
+    (with-help-window hbuf
+      (let ((snippet (get-text-property 0 'helm-emmet-snippet candidate)))
+        (when (functionp snippet)
+          (setq snippet (funcall snippet "")))
+        (prin1 snippet)))))
+
 (define-helm-type-attribute 'emmet
   '((action . (("Preview" . (lambda (c)
                               (insert c)
@@ -88,8 +96,8 @@
                              (insert c)
                              (emmet-expand-line c)))))
     (real-to-display . helm-emmet-real-to-display)
-    (persistent-action . t)
-    (persistent-help . "Do nothing")))
+    (persistent-action . helm-emmet-persistent-action)
+    (persistent-help . "Describe this snippet")))
 
 (defvar helm-source-emmet-html-snippets
   '((name . "emmet html snippets")
