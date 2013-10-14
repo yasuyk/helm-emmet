@@ -34,23 +34,51 @@
 (require 'helm)
 (require 'emmet-mode)
 
+;;; Faces
+(defface helm-emmet-snippet-first-line
+    '((t (:foreground "yellow")))
+  "Face used for a first line of snippet in helm buffer."
+  :group 'helm-emmet)
+
+(defun helm-emmet-snippets-init (hash)
+  (let* ((lgst-len 0) keys)
+    (maphash (lambda (k v)
+               (when (> (length k) lgst-len)
+                 (setq lgst-len (length k)))
+               (setq k (propertize k 'helm-emmet-snippet v))
+               (setq keys (cons k keys))) hash)
+    (helm-attrset 'lgst-len lgst-len)
+    keys))
+
 (defvar helm-emmet-html-snippets-hash
   (gethash "snippets" (gethash "html" emmet-snippets)))
-
-(defvar helm-emmet-html-snippets-keys
-  (loop for k being hash-key in helm-emmet-html-snippets-hash collect k))
 
 (defvar helm-emmet-html-aliases-hash
   (gethash "aliases" (gethash "html" emmet-snippets)))
 
-(defvar helm-emmet-html-aliases-keys
-  (loop for k being hash-key in helm-emmet-html-aliases-hash collect k))
-
 (defvar helm-emmet-css-snippets-hash
   (gethash "snippets" (gethash "css" emmet-snippets)))
 
-(defvar helm-emmet-css-snippets-keys
-  (loop for k being hash-key in helm-emmet-css-snippets-hash collect k))
+(defvar helm-emmet-html-snippets-keys nil)
+(defvar helm-emmet-html-aliases-keys nil)
+(defvar helm-emmet-css-snippets-keys nil)
+
+(defun helm-emmet-padding-space (lgst-len str)
+  (let ((length (- lgst-len (length str))))
+        (if (< 0 length) (make-string length ? ) " ")))
+
+(defun helm-emmet-real-to-display (candidate)
+  (let ((snippet (get-text-property 0 'helm-emmet-snippet candidate))
+        (lgst-len (helm-attr 'lgst-len))
+        firstline)
+    (when (functionp snippet)
+      (setq snippet (funcall snippet "")))
+    (if (stringp snippet)
+        (progn
+          (setq firstline (car (split-string snippet "\n")))
+          (setq firstline (propertize firstline 'face 'helm-emmet-snippet-first-line))
+          (concat candidate " " (helm-emmet-padding-space lgst-len candidate) firstline))
+      candidate)))
 
 (define-helm-type-attribute 'emmet
   '((action . (("Preview" . (lambda (c)
@@ -58,24 +86,38 @@
                               (call-interactively 'emmet-expand-line)))
                ("Expand" . (lambda (c)
                              (insert c)
-                             (emmet-expand-line c)))))))
-;; TODO persistent-action
+                             (emmet-expand-line c)))))
+    (real-to-display . helm-emmet-real-to-display)
+    (persistent-action . t)
+    (persistent-help . "Do nothing")))
 
 (defvar helm-source-emmet-html-snippets
   '((name . "emmet html snippets")
+    (init . (lambda ()
+              (setq helm-emmet-html-snippets-keys
+                    (helm-emmet-snippets-init helm-emmet-html-snippets-hash))))
     (candidates . helm-emmet-html-snippets-keys)
+    (lgst-len)
     (type . emmet))
   "Show emmet-mode's html snippets.")
 
 (defvar helm-source-emmet-html-aliases
   '((name . "emmet html aliases")
+    (init . (lambda ()
+              (setq helm-emmet-html-aliases-keys
+                    (helm-emmet-snippets-init helm-emmet-html-aliases-hash))))
     (candidates . helm-emmet-html-aliases-keys)
+    (lgst-len)
     (type . emmet))
   "Show emmet-mode's html aliases.")
 
 (defvar helm-source-emmet-css-snippets
   '((name . "emmet css snippets")
+    (init . (lambda ()
+              (setq helm-emmet-css-snippets-keys
+                    (helm-emmet-snippets-init helm-emmet-css-snippets-hash))))
     (candidates . helm-emmet-css-snippets-keys)
+    (lgst-len)
     (type . emmet))
   "Show emmet-mode's css snippets.")
 
